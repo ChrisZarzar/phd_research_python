@@ -1,0 +1,9 @@
+<PAMDataset>
+  <PAMRasterBand band="1">
+    <Description>t_t89</Description>
+    <NoDataValue>-2.14748364800000E+009</NoDataValue>
+    <Metadata>
+      <MDI key="RepresentationType">ATHEMATIC</MDI>
+    </Metadata>
+  </PAMRasterBand>
+</PAMDataset>

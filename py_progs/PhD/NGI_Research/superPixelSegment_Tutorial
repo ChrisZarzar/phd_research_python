@@ -1,0 +1,78 @@
+# -*- coding: cp1252 -*-
+"""
+Retrieved from: http://www.pyimagesearch.com/2014/07/28/a-slic-superpixel-tutorial-using-python/
+====================================================
+Segmentation: A SLIC Superpixel Tutorial using Python
+====================================================
+
+
+On Lines 2-7 we import the packages we値l be using for this example. To perform the SLIC superpixel segmentation, we will be using the sckit-image implementation, which we import on Line 2. To draw the actual superpixel segmentations, scikit-image provides us with a mark_boundaries  function which we import on Line 3.
+
+From there, we import a utility function, img_as_float  on Line 4, which as the name suggests, converts an image from an unsigned 8-bit integer, to a floating point data with, with all pixel values called to the range [0, 1].
+
+Line 5 imports the io  sub-package of scikit-image which is used for loading and saving images.
+
+We値l also make use of matplotlib to plot our results and argparse  to parse our command line arguments.
+
+Lines 10-12 handle parsing our command line arguments. We need only a single switch, --image , which is the path to where our image resides on disk.
+
+We then load this image and convert it from an unsigned 8-bit integer to a floating point data type on Line 15.
+
+Now the interesting stuff happens.
+
+We start looping over our number of superpixel segments on Line 18. In this case, we値l be examining three increasing sizes of segments: 100, 200, and 300, respectively.
+
+We perform the SLIC superpixel segmentation on Line 21. The slic  function takes only a single required parameter, which is the image we want to perform superpixel segmentation on.
+
+However, the slic  function also provides many optional parameters, which I値l only cover a sample of here.
+
+The first is the is the n_segments  argument which defines how many superpixel segments we want to generate. This value defaults to 100 segments.
+
+We then supply sigma , which is the smoothing Gaussian kernel applied prior to segmentation.
+
+Other optional parameters can be utilized in the function, such as max_iter , which the maximum number of iterations for k-means, compactness , which balances the color-space proximity with image space-proximity, and convert2lab  which determines whether the input image should be converted to the L*a*b* color space prior to forming superpixels (in nearly all cases, having convert2lab  set to True  is a good idea).
+
+Now that we have our segments, we display them using matplotlib in Lines 24-27.
+
+In order to draw the segmentations, we make use of the   mark_boundaries  function which simply takes our original image and overlays our superpixel segments.
+
+Finally, our results are displayed on Line 30.
+
+Now that our code is done, let痴 see what our results look like.
+
+Fire up a shell and execute the following command:
+
+$ python superpixel.py --image raptors.png
+
+"""
+# import the necessary packages
+from skimage.segmentation import slic
+from skimage.segmentation import mark_boundaries
+from skimage.util import img_as_float
+from skimage import io
+import matplotlib.pyplot as plt
+import argparse
+ 
+# construct the argument parser and parse the arguments
+ap = argparse.ArgumentParser()
+ap.add_argument("-i", "--image", required = True, help = "Path to the image")
+args = vars(ap.parse_args())
+ 
+# load the image and convert it to a floating point data type
+image = img_as_float(io.imread(args["image"]))
+ 
+# loop over the number of segments
+for numSegments in (100, 200, 300):
+	# apply SLIC and extract (approximately) the supplied number
+	# of segments
+	segments = slic(image, n_segments = numSegments, sigma = 5)
+ 
+	# show the output of SLIC
+	fig = plt.figure("Superpixels -- %d segments" % (numSegments))
+	ax = fig.add_subplot(1, 1, 1)
+	ax.imshow(mark_boundaries(image, segments))
+	plt.axis("off")
+ 
+# show the plots
+plt.show()
+
